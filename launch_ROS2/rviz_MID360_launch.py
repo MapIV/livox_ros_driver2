@@ -43,9 +43,6 @@ def generate_launch_description():
         executable='livox_ros_driver2_node',
         name='livox_lidar_publisher',
         namespace=namespace,
-        remappings=[
-            ('/livox/lidar', 'livox/mid360/lidar'),
-        ],
         output='screen',
         parameters=livox_ros2_params
         )
