@@ -1,6 +1,7 @@
 import os
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
+from launch.substitutions import EnvironmentVariable
 from launch_ros.actions import Node
 import launch
 
@@ -12,7 +13,7 @@ publish_freq  = 10.0 # freqency of publish, 5.0, 10.0, 20.0, 50.0, etc.
 output_type   = 0
 frame_id      = 'livox_frame'
 lvx_file_path = '/home/livox/livox_test.lvx'
-cmdline_bd_code = 'livox0000000001'
+cmdline_bd_code = 'livox47MCN7J0032590'
 
 cur_path = os.path.split(os.path.realpath(__file__))[0] + '/'
 cur_config_path = cur_path + '../config'
@@ -34,10 +35,17 @@ livox_ros2_params = [
 
 
 def generate_launch_description():
+
+    namespace = EnvironmentVariable('ROS_NAMESPACE')
+
     livox_driver = Node(
         package='livox_ros_driver2',
         executable='livox_ros_driver2_node',
         name='livox_lidar_publisher',
+        namespace=namespace,
+        remappings=[
+            ('/livox/lidar', 'livox/mid360/lidar'),
+        ],
         output='screen',
         parameters=livox_ros2_params
         )
@@ -45,6 +53,7 @@ def generate_launch_description():
     livox_rviz = Node(
             package='rviz2',
             executable='rviz2',
+            namespace=namespace,
             output='screen',
             arguments=['--display-config', rviz_config_path]
         )
